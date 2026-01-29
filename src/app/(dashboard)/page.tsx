@@ -38,7 +38,7 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{activeCustomers}</div>
-            <p className="text-xs text-gray-500">of {totalCustomers} total</p>
+            <p className="text-xs text-gray-700">of {totalCustomers} total</p>
           </CardContent>
         </Card>
         <Card>
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalInvoices}</div>
-            <p className="text-xs text-gray-500">all time</p>
+            <p className="text-xs text-gray-700">all time</p>
           </CardContent>
         </Card>
         <Card>
@@ -62,7 +62,7 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{draftInvoices}</div>
-            <p className="text-xs text-gray-500">pending review</p>
+            <p className="text-xs text-gray-700">pending review</p>
           </CardContent>
         </Card>
       </div>

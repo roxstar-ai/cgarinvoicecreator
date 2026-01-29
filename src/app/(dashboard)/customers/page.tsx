@@ -55,7 +55,7 @@ export default async function CustomersPage({ searchParams }: PageProps) {
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors flex items-center gap-2 ${
             filter === 'active'
               ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              : 'border-transparent text-gray-700 hover:text-gray-700 hover:border-gray-300'
           }`}
         >
           <UserCheck className="w-4 h-4" />
@@ -66,7 +66,7 @@ export default async function CustomersPage({ searchParams }: PageProps) {
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors flex items-center gap-2 ${
             filter === 'inactive'
               ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              : 'border-transparent text-gray-700 hover:text-gray-700 hover:border-gray-300'
           }`}
         >
           <UserX className="w-4 h-4" />
@@ -77,7 +77,7 @@ export default async function CustomersPage({ searchParams }: PageProps) {
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors flex items-center gap-2 ${
             filter === 'all'
               ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              : 'border-transparent text-gray-700 hover:text-gray-700 hover:border-gray-300'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -109,7 +109,7 @@ export default async function CustomersPage({ searchParams }: PageProps) {
                         )}
                       </CardTitle>
                       {customer.address && (
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-700">
                           {customer.address}
                           {customer.city_state_zip && `, ${customer.city_state_zip}`}
                         </p>
@@ -121,29 +121,29 @@ export default async function CustomersPage({ searchParams }: PageProps) {
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
-                      <span className="text-gray-500">Monthly Rate:</span>
+                      <span className="text-gray-700">Monthly Rate:</span>
                       <p className="font-medium">{formatCurrency(customer.monthly_rate)}</p>
                     </div>
                     {customer.additional_line_1_desc && (
                       <div>
-                        <span className="text-gray-500">{customer.additional_line_1_desc}:</span>
+                        <span className="text-gray-700">{customer.additional_line_1_desc}:</span>
                         <p className="font-medium">{formatCurrency(customer.additional_line_1_amount || 0)}</p>
                       </div>
                     )}
                     {customer.additional_line_2_desc && (
                       <div>
-                        <span className="text-gray-500">{customer.additional_line_2_desc}:</span>
+                        <span className="text-gray-700">{customer.additional_line_2_desc}:</span>
                         <p className="font-medium">{formatCurrency(customer.additional_line_2_amount || 0)}</p>
                       </div>
                     )}
                     {customer.additional_line_3_desc && (
                       <div>
-                        <span className="text-gray-500">{customer.additional_line_3_desc}:</span>
+                        <span className="text-gray-700">{customer.additional_line_3_desc}:</span>
                         <p className="font-medium">{formatCurrency(customer.additional_line_3_amount || 0)}</p>
                       </div>
                     )}
                     <div className="col-span-2 md:col-span-1 md:text-right">
-                      <span className="text-gray-500">Monthly Total:</span>
+                      <span className="text-gray-700">Monthly Total:</span>
                       <p className="font-bold text-lg text-blue-600">{formatCurrency(total)}</p>
                     </div>
                   </div>
@@ -157,7 +157,7 @@ export default async function CustomersPage({ searchParams }: PageProps) {
           <CardContent className="py-12 text-center">
             <Users className="w-12 h-12 mx-auto text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-1">No residents found</h3>
-            <p className="text-gray-500 mb-4">
+            <p className="text-gray-700 mb-4">
               {filter === 'active'
                 ? 'No active residents. Add a new resident to get started.'
                 : filter === 'inactive'

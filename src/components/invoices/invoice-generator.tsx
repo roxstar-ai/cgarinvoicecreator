@@ -117,7 +117,7 @@ export function InvoiceGenerator({ customers }: InvoiceGeneratorProps) {
                 value={serviceMonth}
                 onChange={(e) => setServiceMonth(e.target.value)}
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-gray-700">
                 Month services were rendered
               </p>
             </div>
@@ -130,7 +130,7 @@ export function InvoiceGenerator({ customers }: InvoiceGeneratorProps) {
                 value={invoiceDate}
                 onChange={(e) => setInvoiceDate(e.target.value)}
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-gray-700">
                 Date printed on invoice
               </p>
             </div>
@@ -143,7 +143,7 @@ export function InvoiceGenerator({ customers }: InvoiceGeneratorProps) {
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-gray-700">
                 Payment due by this date
               </p>
             </div>
@@ -173,7 +173,7 @@ export function InvoiceGenerator({ customers }: InvoiceGeneratorProps) {
         </CardHeader>
         <CardContent>
           {customers.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-gray-700">
               <AlertCircle className="w-8 h-8 mx-auto mb-2" />
               <p>No active residents found. Add residents first.</p>
             </div>
@@ -206,7 +206,7 @@ export function InvoiceGenerator({ customers }: InvoiceGeneratorProps) {
                       )}
                       <div>
                         <p className="font-medium">{customer.name}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-700">
                           Monthly: {formatCurrency(customer.monthly_rate)}
                           {(customer.additional_line_1_amount ||
                             customer.additional_line_2_amount ||
@@ -231,7 +231,7 @@ export function InvoiceGenerator({ customers }: InvoiceGeneratorProps) {
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-700">
                 {selectedCustomers.size} of {customers.length} residents selected
               </p>
               <p className="text-2xl font-bold text-gray-900">

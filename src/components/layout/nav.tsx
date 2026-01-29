@@ -49,7 +49,7 @@ export function Nav() {
                       'inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors',
                       isActive
                         ? 'bg-blue-50 text-blue-700'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                     )}
                   >
                     <Icon className="w-4 h-4 mr-2" />
@@ -64,7 +64,7 @@ export function Nav() {
               variant="ghost"
               size="sm"
               onClick={handleSignOut}
-              className="text-gray-600 hover:text-gray-900"
+              className="text-gray-700 hover:text-gray-900"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out
@@ -88,7 +88,7 @@ export function Nav() {
                   'flex flex-col items-center px-3 py-2 text-xs font-medium rounded-md',
                   isActive
                     ? 'text-blue-700'
-                    : 'text-gray-600'
+                    : 'text-gray-700'
                 )}
               >
                 <Icon className="w-5 h-5 mb-1" />

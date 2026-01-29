@@ -75,7 +75,7 @@ export default async function InvoicesPage({ searchParams }: PageProps) {
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
             statusFilter === 'all'
               ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              : 'border-transparent text-gray-700 hover:text-gray-700 hover:border-gray-300'
           }`}
         >
           All
@@ -85,7 +85,7 @@ export default async function InvoicesPage({ searchParams }: PageProps) {
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
             statusFilter === 'draft'
               ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              : 'border-transparent text-gray-700 hover:text-gray-700 hover:border-gray-300'
           }`}
         >
           Draft
@@ -95,7 +95,7 @@ export default async function InvoicesPage({ searchParams }: PageProps) {
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
             statusFilter === 'sent'
               ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              : 'border-transparent text-gray-700 hover:text-gray-700 hover:border-gray-300'
           }`}
         >
           Sent
@@ -105,7 +105,7 @@ export default async function InvoicesPage({ searchParams }: PageProps) {
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
             statusFilter === 'paid'
               ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              : 'border-transparent text-gray-700 hover:text-gray-700 hover:border-gray-300'
           }`}
         >
           Paid
@@ -123,7 +123,7 @@ export default async function InvoicesPage({ searchParams }: PageProps) {
                   <h2 className="text-lg font-semibold text-gray-900">
                     {formatMonthYear(month)} Services
                   </h2>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-700">
                     {monthInvoices!.length} invoice{monthInvoices!.length === 1 ? '' : 's'}
                   </span>
                 </div>
@@ -152,14 +152,14 @@ export default async function InvoicesPage({ searchParams }: PageProps) {
                                   {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
                                 </span>
                               </div>
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-gray-700">
                                 {invoice.customer_name}
                               </p>
                             </div>
                           </div>
                           <div className="flex items-center gap-4">
                             <div className="text-right hidden md:block">
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-gray-700">
                                 Due: {formatDate(invoice.due_date)}
                               </p>
                             </div>
@@ -181,7 +181,7 @@ export default async function InvoicesPage({ searchParams }: PageProps) {
           <CardContent className="py-12 text-center">
             <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-1">No invoices found</h3>
-            <p className="text-gray-500 mb-4">
+            <p className="text-gray-700 mb-4">
               {statusFilter !== 'all'
                 ? `No ${statusFilter} invoices. Try a different filter.`
                 : 'Generate your first set of invoices to get started.'}

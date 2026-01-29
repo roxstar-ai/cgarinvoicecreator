@@ -129,7 +129,7 @@ export function CustomerForm({ customer, mode }: CustomerFormProps) {
 
           <div className="border-t pt-4">
             <h4 className="text-sm font-medium text-gray-700 mb-3">Additional Line Items</h4>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-gray-700 mb-4">
               These charges will appear on every invoice for this resident.
             </p>
 
@@ -205,7 +205,7 @@ export function CustomerForm({ customer, mode }: CustomerFormProps) {
         <CardContent>
           <textarea
             name="notes"
-            className="flex min-h-[100px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            className="flex min-h-[100px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
             placeholder="Internal notes about this resident..."
             defaultValue={customer?.notes || ''}
           />

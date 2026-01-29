@@ -135,12 +135,12 @@ export function SettingsForm({ settings }: SettingsFormProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-gray-800 mb-1">
             Thank You Note
           </label>
           <textarea
             name="thank_you_note"
-            className="flex min-h-[100px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            className="flex min-h-[100px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
             placeholder="Thank you for choosing Carroll Golden Age Retreat..."
             defaultValue={settings?.thank_you_note || ''}
           />

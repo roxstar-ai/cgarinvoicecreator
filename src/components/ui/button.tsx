@@ -17,7 +17,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
               variant === 'default',
             'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600':
               variant === 'destructive',
-            'border border-gray-300 bg-white hover:bg-gray-50 focus-visible:ring-gray-400':
+            'border border-gray-300 bg-white text-gray-800 hover:bg-gray-50 focus-visible:ring-gray-400':
               variant === 'outline',
             'hover:bg-gray-100 focus-visible:ring-gray-400': variant === 'ghost',
             'text-blue-600 underline-offset-4 hover:underline':

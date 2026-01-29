@@ -61,7 +61,7 @@ export function InvoicePrintView({ invoice, facility }: InvoicePrintViewProps) {
                 <p className="text-gray-600">
                   {facility?.city_state_zip || 'Carrollton, OH 44615'}
                 </p>
-                <div className="mt-2 text-sm text-gray-500">
+                <div className="mt-2 text-sm text-gray-700">
                   {facility?.phone && <p>Phone: {facility.phone}</p>}
                   {facility?.fax && <p>Fax: {facility.fax}</p>}
                   {facility?.website && <p>{facility.website}</p>}
@@ -80,7 +80,7 @@ export function InvoicePrintView({ invoice, facility }: InvoicePrintViewProps) {
           {/* Bill To & Invoice Details */}
           <div className="grid grid-cols-2 gap-8 mb-8">
             <div>
-              <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase mb-2">
                 Bill To
               </h3>
               <p className="text-lg font-medium text-gray-900">
@@ -96,11 +96,11 @@ export function InvoicePrintView({ invoice, facility }: InvoicePrintViewProps) {
             <div className="text-right">
               <div className="inline-block text-left">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-                  <span className="text-gray-500">Service Month:</span>
+                  <span className="text-gray-700">Service Month:</span>
                   <span className="font-medium">{formatMonthYear(invoice.service_month)}</span>
-                  <span className="text-gray-500">Invoice Date:</span>
+                  <span className="text-gray-700">Invoice Date:</span>
                   <span className="font-medium">{formatDate(invoice.invoice_date)}</span>
-                  <span className="text-gray-500">Due Date:</span>
+                  <span className="text-gray-700">Due Date:</span>
                   <span className="font-medium text-red-600">{formatDate(invoice.due_date)}</span>
                 </div>
               </div>
