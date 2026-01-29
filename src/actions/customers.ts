@@ -100,3 +100,35 @@ export async function getCustomers(filter: 'all' | 'active' | 'inactive' = 'all'
 
   return { data };
 }
+
+// Update a single customer's name fields
+export async function updateCustomerNameFields(
+  id: string,
+  firstName: string,
+  middleName: string | null,
+  lastName: string
+) {
+  const supabase = await createClient();
+
+  const fullName = middleName
+    ? `${firstName} ${middleName} ${lastName}`
+    : `${firstName} ${lastName}`;
+
+  const { error } = await supabase
+    .from('customers')
+    .update({
+      first_name: firstName,
+      middle_name: middleName,
+      last_name: lastName,
+      name: fullName,
+    })
+    .eq('id', id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath('/customers');
+  revalidatePath(`/customers/${id}`);
+  return { success: true };
+}

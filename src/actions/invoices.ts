@@ -56,11 +56,15 @@ export async function generateInvoices(params: GenerateInvoicesParams) {
       return { error: `Failed to generate invoice number: ${numberError.message}` };
     }
 
+    const dailyRateTotal = (customer.daily_rate || 0) * (customer.daily_rate_days || 0);
+
     const total = calculateInvoiceTotal(
       customer.monthly_rate,
       customer.additional_line_1_amount,
       customer.additional_line_2_amount,
-      customer.additional_line_3_amount
+      customer.additional_line_3_amount,
+      customer.daily_rate,
+      customer.daily_rate_days
     );
 
     invoices.push({
@@ -73,6 +77,9 @@ export async function generateInvoices(params: GenerateInvoicesParams) {
       customer_address: customer.address,
       customer_city_state_zip: customer.city_state_zip,
       monthly_rate: customer.monthly_rate,
+      daily_rate: customer.daily_rate,
+      daily_rate_days: customer.daily_rate_days,
+      daily_rate_total: dailyRateTotal > 0 ? dailyRateTotal : null,
       line_1_desc: customer.additional_line_1_desc,
       line_1_amount: customer.additional_line_1_amount,
       line_2_desc: customer.additional_line_2_desc,

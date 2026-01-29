@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { format, subMonths, startOfMonth, setDate } from 'date-fns';
+import { format, startOfMonth, addMonths, setDate, parseISO } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -15,14 +15,23 @@ interface InvoiceGeneratorProps {
   customers: Customer[];
 }
 
+function getDisplayName(customer: Customer): string {
+  if (customer.first_name && customer.last_name) {
+    return customer.middle_name
+      ? `${customer.last_name}, ${customer.first_name} ${customer.middle_name}`
+      : `${customer.last_name}, ${customer.first_name}`;
+  }
+  return customer.name;
+}
+
 export function InvoiceGenerator({ customers }: InvoiceGeneratorProps) {
   const router = useRouter();
   const now = new Date();
 
-  // Default dates: Previous month for services, 1st of current month for invoice date, 15th for due date
-  const defaultServiceMonth = format(startOfMonth(subMonths(now, 1)), 'yyyy-MM-dd');
-  const defaultInvoiceDate = format(startOfMonth(now), 'yyyy-MM-dd');
-  const defaultDueDate = format(setDate(now, 15), 'yyyy-MM-dd');
+  // Default dates: Current month for services, today for invoice date, 15th of next month for due date
+  const defaultServiceMonth = format(startOfMonth(now), 'yyyy-MM-dd');
+  const defaultInvoiceDate = format(now, 'yyyy-MM-dd');
+  const defaultDueDate = format(setDate(addMonths(now, 1), 15), 'yyyy-MM-dd');
 
   const [serviceMonth, setServiceMonth] = useState(defaultServiceMonth);
   const [invoiceDate, setInvoiceDate] = useState(defaultInvoiceDate);
@@ -62,7 +71,9 @@ export function InvoiceGenerator({ customers }: InvoiceGeneratorProps) {
             c.monthly_rate,
             c.additional_line_1_amount,
             c.additional_line_2_amount,
-            c.additional_line_3_amount
+            c.additional_line_3_amount,
+            c.daily_rate,
+            c.daily_rate_days
           ),
         0
       );
@@ -87,14 +98,13 @@ export function InvoiceGenerator({ customers }: InvoiceGeneratorProps) {
 
     if (result.error) {
       setError(result.error);
+      setLoading(false);
     } else {
-      setSuccess({ count: result.count || 0 });
+      router.push('/invoices');
     }
-
-    setLoading(false);
   };
 
-  const serviceMonthFormatted = format(new Date(serviceMonth), 'MMMM yyyy');
+  const serviceMonthFormatted = format(parseISO(serviceMonth), 'MMMM yyyy');
 
   return (
     <div className="space-y-6">
@@ -184,9 +194,13 @@ export function InvoiceGenerator({ customers }: InvoiceGeneratorProps) {
                   customer.monthly_rate,
                   customer.additional_line_1_amount,
                   customer.additional_line_2_amount,
-                  customer.additional_line_3_amount
+                  customer.additional_line_3_amount,
+                  customer.daily_rate,
+                  customer.daily_rate_days
                 );
                 const isSelected = selectedCustomers.has(customer.id);
+                const hasDaily = customer.daily_rate && customer.daily_rate_days;
+                const hasMonthly = customer.monthly_rate > 0;
 
                 return (
                   <div
@@ -205,9 +219,11 @@ export function InvoiceGenerator({ customers }: InvoiceGeneratorProps) {
                         <Circle className="w-5 h-5 text-gray-300" />
                       )}
                       <div>
-                        <p className="font-medium">{customer.name}</p>
+                        <p className="font-medium">{getDisplayName(customer)}</p>
                         <p className="text-sm text-gray-700">
-                          Monthly: {formatCurrency(customer.monthly_rate)}
+                          {hasMonthly && `Monthly: ${formatCurrency(customer.monthly_rate)}`}
+                          {hasMonthly && hasDaily && ' + '}
+                          {hasDaily && `Daily: ${formatCurrency(customer.daily_rate!)} × ${customer.daily_rate_days} days`}
                           {(customer.additional_line_1_amount ||
                             customer.additional_line_2_amount ||
                             customer.additional_line_3_amount) &&

@@ -25,9 +25,14 @@ export type Database = {
           address: string | null
           city_state_zip: string | null
           created_at: string | null
+          daily_rate: number | null
+          daily_rate_days: number | null
           email: string | null
+          first_name: string | null
           id: string
           is_active: boolean | null
+          last_name: string | null
+          middle_name: string | null
           monthly_rate: number
           name: string
           notes: string | null
@@ -44,9 +49,14 @@ export type Database = {
           address?: string | null
           city_state_zip?: string | null
           created_at?: string | null
+          daily_rate?: number | null
+          daily_rate_days?: number | null
           email?: string | null
+          first_name?: string | null
           id?: string
           is_active?: boolean | null
+          last_name?: string | null
+          middle_name?: string | null
           monthly_rate?: number
           name: string
           notes?: string | null
@@ -63,9 +73,14 @@ export type Database = {
           address?: string | null
           city_state_zip?: string | null
           created_at?: string | null
+          daily_rate?: number | null
+          daily_rate_days?: number | null
           email?: string | null
+          first_name?: string | null
           id?: string
           is_active?: boolean | null
+          last_name?: string | null
+          middle_name?: string | null
           monthly_rate?: number
           name?: string
           notes?: string | null
@@ -138,6 +153,9 @@ export type Database = {
           customer_city_state_zip: string | null
           customer_id: string
           customer_name: string
+          daily_rate: number | null
+          daily_rate_days: number | null
+          daily_rate_total: number | null
           due_date: string
           id: string
           invoice_date: string
@@ -161,6 +179,9 @@ export type Database = {
           customer_city_state_zip?: string | null
           customer_id: string
           customer_name: string
+          daily_rate?: number | null
+          daily_rate_days?: number | null
+          daily_rate_total?: number | null
           due_date: string
           id?: string
           invoice_date: string
@@ -184,6 +205,9 @@ export type Database = {
           customer_city_state_zip?: string | null
           customer_id?: string
           customer_name?: string
+          daily_rate?: number | null
+          daily_rate_days?: number | null
+          daily_rate_total?: number | null
           due_date?: string
           id?: string
           invoice_date?: string

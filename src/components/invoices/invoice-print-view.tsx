@@ -19,7 +19,12 @@ export function InvoicePrintView({ invoice, facility }: InvoicePrintViewProps) {
   };
 
   const lineItems = [
-    { desc: 'Monthly Care Services', amount: invoice.monthly_rate },
+    invoice.monthly_rate > 0
+      ? { desc: 'Monthly Care Services', amount: invoice.monthly_rate }
+      : null,
+    invoice.daily_rate && invoice.daily_rate_days && invoice.daily_rate_total
+      ? { desc: `Daily Care Services (${invoice.daily_rate_days} days @ ${formatCurrency(invoice.daily_rate)}/day)`, amount: invoice.daily_rate_total }
+      : null,
     invoice.line_1_desc && invoice.line_1_amount
       ? { desc: invoice.line_1_desc, amount: invoice.line_1_amount }
       : null,

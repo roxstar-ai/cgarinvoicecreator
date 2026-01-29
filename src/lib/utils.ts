@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { format, subMonths, startOfMonth, addMonths, setDate } from 'date-fns';
+import { format, startOfMonth, addMonths, setDate, parseISO } from 'date-fns';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -14,21 +14,23 @@ export function formatCurrency(amount: number): string {
 }
 
 export function formatDate(date: string | Date): string {
-  return format(new Date(date), 'MMMM d, yyyy');
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  return format(d, 'MMMM d, yyyy');
 }
 
 export function formatMonthYear(date: string | Date): string {
-  return format(new Date(date), 'MMMM yyyy');
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  return format(d, 'MMMM yyyy');
 }
 
 // Calculate invoice dates based on the business logic:
-// - Service month: Previous month (e.g., January)
-// - Invoice date: 1st of current month (e.g., February 1)
-// - Due date: 15th of current month (e.g., February 15)
+// - Service month: Current month (e.g., January if generating in January)
+// - Invoice date: Today's date
+// - Due date: 15th of next month (e.g., February 15)
 export function calculateInvoiceDates(referenceDate: Date = new Date()) {
-  const serviceMonth = startOfMonth(subMonths(referenceDate, 1));
-  const invoiceDate = startOfMonth(referenceDate);
-  const dueDate = setDate(referenceDate, 15);
+  const serviceMonth = startOfMonth(referenceDate);
+  const invoiceDate = referenceDate;
+  const dueDate = setDate(addMonths(referenceDate, 1), 15);
 
   return {
     serviceMonth,
@@ -45,15 +47,19 @@ export function calculateInvoiceDates(referenceDate: Date = new Date()) {
   };
 }
 
-// Calculate total from monthly rate and additional lines
+// Calculate total from monthly rate, daily rate, and additional lines
 export function calculateInvoiceTotal(
   monthlyRate: number,
   line1Amount?: number | null,
   line2Amount?: number | null,
-  line3Amount?: number | null
+  line3Amount?: number | null,
+  dailyRate?: number | null,
+  dailyRateDays?: number | null
 ): number {
+  const dailyTotal = (dailyRate || 0) * (dailyRateDays || 0);
   return (
     monthlyRate +
+    dailyTotal +
     (line1Amount || 0) +
     (line2Amount || 0) +
     (line3Amount || 0)
