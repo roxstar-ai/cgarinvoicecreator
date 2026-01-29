@@ -37,15 +37,15 @@ export function InvoiceList({ invoices, statusFilter }: InvoiceListProps) {
 
     // Sort by created_at descending to find the most recent
     const sorted = [...invoices].sort((a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
     );
 
-    const mostRecentTime = new Date(sorted[0].created_at).getTime();
+    const mostRecentTime = new Date(sorted[0].created_at || 0).getTime();
     const oneMinute = 60 * 1000;
 
     // Get all invoices created within 1 minute of the most recent one (same batch)
     const recentIds = sorted
-      .filter((inv) => mostRecentTime - new Date(inv.created_at).getTime() < oneMinute)
+      .filter((inv) => mostRecentTime - new Date(inv.created_at || 0).getTime() < oneMinute)
       .map((inv) => inv.id);
 
     return new Set(recentIds);
