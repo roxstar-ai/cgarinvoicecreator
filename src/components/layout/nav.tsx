@@ -26,16 +26,16 @@ export function Nav() {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200">
+    <nav className="bg-blue-900 border-b-4 border-red-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-lg font-semibold text-gray-900">
-                CGAR Invoice
+              <span className="text-lg font-semibold text-white">
+                Resident Invoicing
               </span>
             </div>
-            <div className="hidden sm:ml-8 sm:flex sm:space-x-4">
+            <div className="hidden sm:ml-8 sm:flex sm:space-x-2">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href ||
@@ -48,8 +48,8 @@ export function Nav() {
                     className={cn(
                       'inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors',
                       isActive
-                        ? 'bg-blue-50 text-blue-700'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                        ? 'bg-white text-blue-900'
+                        : 'text-blue-100 hover:bg-blue-800 hover:text-white'
                     )}
                   >
                     <Icon className="w-4 h-4 mr-2" />
@@ -64,7 +64,7 @@ export function Nav() {
               variant="ghost"
               size="sm"
               onClick={handleSignOut}
-              className="text-gray-700 hover:text-gray-900"
+              className="text-blue-100 hover:text-white hover:bg-blue-800"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out
@@ -73,7 +73,7 @@ export function Nav() {
         </div>
       </div>
       {/* Mobile navigation */}
-      <div className="sm:hidden border-t border-gray-200">
+      <div className="sm:hidden border-t border-blue-800 bg-blue-900">
         <div className="flex justify-around py-2">
           {navigation.map((item) => {
             const Icon = item.icon;
@@ -87,8 +87,8 @@ export function Nav() {
                 className={cn(
                   'flex flex-col items-center px-3 py-2 text-xs font-medium rounded-md',
                   isActive
-                    ? 'text-blue-700'
-                    : 'text-gray-700'
+                    ? 'text-white bg-blue-800'
+                    : 'text-blue-200'
                 )}
               >
                 <Icon className="w-5 h-5 mb-1" />

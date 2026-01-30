@@ -6,23 +6,21 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { updateInvoiceStatus, deleteInvoice } from '@/actions/invoices';
 import type { Invoice } from '@/lib/supabase/types';
-import { MoreHorizontal, Printer, Send, CheckCircle, Trash2, Eye } from 'lucide-react';
+import { Eye, CheckCircle, Trash2, XCircle } from 'lucide-react';
 
 interface InvoiceActionsProps {
   invoice: Invoice;
 }
 
 export function InvoiceActions({ invoice }: InvoiceActionsProps) {
-  const [showMenu, setShowMenu] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const router = useRouter();
 
-  const handleStatusChange = async (status: 'draft' | 'sent' | 'paid') => {
+  const handleStatusChange = async (status: 'unpaid' | 'paid') => {
     setLoading(true);
     await updateInvoiceStatus(invoice.id, status);
     setLoading(false);
-    setShowMenu(false);
     router.refresh();
   };
 
@@ -34,88 +32,55 @@ export function InvoiceActions({ invoice }: InvoiceActionsProps) {
   };
 
   return (
-    <div className="relative">
+    <div className="flex items-center gap-1">
+      {/* View/Print */}
+      <Link href={`/invoices/${invoice.id}`}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-blue-900 hover:text-blue-700 hover:bg-blue-50"
+          title="View / Print"
+        >
+          <Eye className="w-4 h-4" />
+        </Button>
+      </Link>
+
+      {/* Toggle Paid/Unpaid */}
+      {invoice.status === 'paid' ? (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+          onClick={() => handleStatusChange('unpaid')}
+          disabled={loading}
+          title="Mark as Unpaid"
+        >
+          <XCircle className="w-4 h-4" />
+        </Button>
+      ) : (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50"
+          onClick={() => handleStatusChange('paid')}
+          disabled={loading}
+          title="Mark as Paid"
+        >
+          <CheckCircle className="w-4 h-4" />
+        </Button>
+      )}
+
+      {/* Delete */}
       <Button
         variant="ghost"
         size="icon"
-        onClick={() => setShowMenu(!showMenu)}
+        className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+        onClick={() => setShowDeleteConfirm(true)}
         disabled={loading}
+        title="Delete"
       >
-        <MoreHorizontal className="w-4 h-4" />
+        <Trash2 className="w-4 h-4" />
       </Button>
-
-      {showMenu && (
-        <>
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setShowMenu(false)}
-          />
-          <div className="absolute right-0 z-20 mt-1 w-48 rounded-md bg-white shadow-lg border border-gray-200">
-            <div className="py-1">
-              <Link
-                href={`/invoices/${invoice.id}`}
-                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                onClick={() => setShowMenu(false)}
-              >
-                <Eye className="w-4 h-4 mr-2" />
-                View / Print
-              </Link>
-
-              <div className="border-t border-gray-100 my-1" />
-
-              <button
-                onClick={() => handleStatusChange('draft')}
-                disabled={invoice.status === 'draft'}
-                className={`flex items-center w-full px-4 py-2 text-sm ${
-                  invoice.status === 'draft'
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <span className="w-4 h-4 mr-2 rounded-full bg-yellow-400" />
-                Mark as Draft
-              </button>
-              <button
-                onClick={() => handleStatusChange('sent')}
-                disabled={invoice.status === 'sent'}
-                className={`flex items-center w-full px-4 py-2 text-sm ${
-                  invoice.status === 'sent'
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <Send className="w-4 h-4 mr-2 text-blue-500" />
-                Mark as Sent
-              </button>
-              <button
-                onClick={() => handleStatusChange('paid')}
-                disabled={invoice.status === 'paid'}
-                className={`flex items-center w-full px-4 py-2 text-sm ${
-                  invoice.status === 'paid'
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                Mark as Paid
-              </button>
-
-              <div className="border-t border-gray-100 my-1" />
-
-              <button
-                onClick={() => {
-                  setShowMenu(false);
-                  setShowDeleteConfirm(true);
-                }}
-                className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete
-              </button>
-            </div>
-          </div>
-        </>
-      )}
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (

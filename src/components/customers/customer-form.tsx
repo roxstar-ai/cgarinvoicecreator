@@ -15,7 +15,9 @@ interface CustomerFormProps {
 
 function formatAmount(value: number | null | undefined): string {
   if (value === null || value === undefined || value === 0) return '';
-  return value.toFixed(2);
+  // Round to 2 decimal places to avoid floating-point precision issues
+  const rounded = Math.round(value * 100) / 100;
+  return rounded.toFixed(2);
 }
 
 function formatDays(value: number | null | undefined): string {
@@ -27,12 +29,15 @@ export function CustomerForm({ customer, mode }: CustomerFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [monthlyRate, setMonthlyRate] = useState<string>(formatAmount(customer?.monthly_rate));
   const [dailyRate, setDailyRate] = useState<string>(formatAmount(customer?.daily_rate));
   const [days, setDays] = useState<string>(formatDays(customer?.daily_rate_days));
 
-  const dailyTotal = dailyRate && days
-    ? (parseFloat(dailyRate) * parseFloat(days)).toFixed(2)
-    : '0.00';
+  const dailySubtotal = dailyRate && days
+    ? Math.round(parseFloat(dailyRate) * parseFloat(days) * 100) / 100
+    : 0;
+  const monthlyValue = monthlyRate ? parseFloat(monthlyRate) : 0;
+  const ratesTotal = (Math.round((monthlyValue + dailySubtotal) * 100) / 100).toFixed(2);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,6 +60,9 @@ export function CustomerForm({ customer, mode }: CustomerFormProps) {
       middle_name: middleName,
       last_name: lastName,
       name: fullName,
+      responsible_first_name: formData.get('responsible_first_name') as string || null,
+      responsible_middle_name: formData.get('responsible_middle_name') as string || null,
+      responsible_last_name: formData.get('responsible_last_name') as string || null,
       address: formData.get('address') as string || null,
       city_state_zip: formData.get('city_state_zip') as string || null,
       phone: formData.get('phone') as string || null,
@@ -91,7 +99,7 @@ export function CustomerForm({ customer, mode }: CustomerFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
         <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
           {error}
@@ -99,11 +107,11 @@ export function CustomerForm({ customer, mode }: CustomerFormProps) {
       )}
 
       <Card>
-        <CardHeader>
-          <CardTitle>Resident Information</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">Resident Information</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <Input
               label="First Name"
               name="first_name"
@@ -125,19 +133,46 @@ export function CustomerForm({ customer, mode }: CustomerFormProps) {
               placeholder="Doe"
             />
           </div>
-          <Input
-            label="Address"
-            name="address"
-            defaultValue={customer?.address || ''}
-            placeholder="123 Main Street"
-          />
-          <Input
-            label="City, State ZIP"
-            name="city_state_zip"
-            defaultValue={customer?.city_state_zip || ''}
-            placeholder="Carrollton, OH 44615"
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div className="border-t pt-3">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Responsible Contact (for billing)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <Input
+                label="First Name"
+                name="responsible_first_name"
+                defaultValue={customer?.responsible_first_name || ''}
+                placeholder="Jane"
+              />
+              <Input
+                label="Middle Name"
+                name="responsible_middle_name"
+                defaultValue={customer?.responsible_middle_name || ''}
+                placeholder="Marie"
+              />
+              <Input
+                label="Last Name"
+                name="responsible_last_name"
+                defaultValue={customer?.responsible_last_name || ''}
+                placeholder="Doe"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Input
+              label="Address"
+              name="address"
+              defaultValue={customer?.address || ''}
+              placeholder="123 Main Street"
+            />
+            <Input
+              label="City, State ZIP"
+              name="city_state_zip"
+              defaultValue={customer?.city_state_zip || ''}
+              placeholder="Carrollton, OH 44615"
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Input
               label="Phone"
               name="phone"
@@ -157,77 +192,66 @@ export function CustomerForm({ customer, mode }: CustomerFormProps) {
       </Card>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Rates & Charges</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">Rates & Charges</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <Input
-            label="Monthly Care Rate ($)"
-            name="monthly_rate"
-            type="number"
-            step="0.01"
-            min="0"
-            defaultValue={formatAmount(customer?.monthly_rate)}
-            placeholder="0.00"
-          />
-
-          {/* Daily Rate - saved to profile */}
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-            <h4 className="text-sm font-medium text-gray-800 mb-3">Daily Rate (for partial month stays)</h4>
-            <div className="grid grid-cols-3 gap-4 items-end">
-              <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-1">
-                  Daily Rate ($)
-                </label>
-                <input
-                  type="number"
-                  name="daily_rate"
-                  step="0.01"
-                  min="0"
-                  value={dailyRate}
-                  onChange={(e) => setDailyRate(e.target.value)}
-                  placeholder="0.00"
-                  className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-1">
-                  Days
-                </label>
-                <input
-                  type="number"
-                  name="daily_rate_days"
-                  step="1"
-                  min="0"
-                  max="31"
-                  value={days}
-                  onChange={(e) => setDays(e.target.value)}
-                  placeholder="0"
-                  className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-1">
-                  Total
-                </label>
-                <div className="flex h-10 w-full items-center rounded-md border border-blue-200 bg-blue-100 px-3 py-2 text-base font-semibold text-gray-900">
-                  ${dailyTotal}
-                </div>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+            <div>
+              <label className="block text-sm font-semibold text-gray-800 mb-1">Monthly Rate ($)</label>
+              <input
+                type="number"
+                name="monthly_rate"
+                step="0.01"
+                min="0"
+                value={monthlyRate}
+                onChange={(e) => setMonthlyRate(e.target.value)}
+                placeholder="0.00"
+                className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-800 mb-1">Daily Rate ($)</label>
+              <input
+                type="number"
+                name="daily_rate"
+                step="0.01"
+                min="0"
+                value={dailyRate}
+                onChange={(e) => setDailyRate(e.target.value)}
+                placeholder="0.00"
+                className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-800 mb-1">Days</label>
+              <input
+                type="number"
+                name="daily_rate_days"
+                step="1"
+                min="0"
+                max="31"
+                value={days}
+                onChange={(e) => setDays(e.target.value)}
+                placeholder="0"
+                className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-800 mb-1">Total</label>
+              <div className="flex h-10 w-full items-center rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-base font-semibold text-gray-900">
+                ${ratesTotal}
               </div>
             </div>
           </div>
 
-          <div className="border-t pt-4">
-            <h4 className="text-sm font-medium text-gray-700 mb-3">Additional Line Items</h4>
-            <p className="text-sm text-gray-700 mb-4">
-              These charges will appear on every invoice for this resident.
-            </p>
-
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                <div className="md:col-span-2">
+          <div className="border-t pt-3">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Additional Line Items</h4>
+            <div className="space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+                <div className="md:col-span-3">
                   <Input
-                    label="Additional Item 1 Description"
+                    label="Item 1 Description"
                     name="additional_line_1_desc"
                     defaultValue={customer?.additional_line_1_desc || ''}
                     placeholder="e.g., Medication Management"
@@ -243,11 +267,10 @@ export function CustomerForm({ customer, mode }: CustomerFormProps) {
                   placeholder="0.00"
                 />
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                <div className="md:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+                <div className="md:col-span-3">
                   <Input
-                    label="Additional Item 2 Description"
+                    label="Item 2 Description"
                     name="additional_line_2_desc"
                     defaultValue={customer?.additional_line_2_desc || ''}
                     placeholder="e.g., Physical Therapy"
@@ -263,11 +286,10 @@ export function CustomerForm({ customer, mode }: CustomerFormProps) {
                   placeholder="0.00"
                 />
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                <div className="md:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+                <div className="md:col-span-3">
                   <Input
-                    label="Additional Item 3 Description"
+                    label="Item 3 Description"
                     name="additional_line_3_desc"
                     defaultValue={customer?.additional_line_3_desc || ''}
                     placeholder="e.g., Transportation"
@@ -289,13 +311,13 @@ export function CustomerForm({ customer, mode }: CustomerFormProps) {
       </Card>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Notes</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">Notes</CardTitle>
         </CardHeader>
         <CardContent>
           <textarea
             name="notes"
-            className="flex min-h-[100px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            className="flex min-h-[80px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
             placeholder="Internal notes about this resident..."
             defaultValue={customer?.notes || ''}
           />

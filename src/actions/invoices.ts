@@ -87,7 +87,7 @@ export async function generateInvoices(params: GenerateInvoicesParams) {
       line_3_desc: customer.additional_line_3_desc,
       line_3_amount: customer.additional_line_3_amount,
       total_amount: total,
-      status: 'draft' as const,
+      status: 'unpaid' as const,
     });
   }
 
@@ -110,7 +110,7 @@ export async function generateInvoices(params: GenerateInvoicesParams) {
   return { success: true, count: invoices.length };
 }
 
-export async function updateInvoiceStatus(id: string, status: 'draft' | 'sent' | 'paid') {
+export async function updateInvoiceStatus(id: string, status: 'unpaid' | 'paid') {
   const supabase = await createClient();
 
   const { error } = await supabase

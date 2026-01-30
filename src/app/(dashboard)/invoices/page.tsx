@@ -56,37 +56,27 @@ export default async function InvoicesPage({ searchParams }: PageProps) {
           href="/invoices?status=all"
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
             statusFilter === 'all'
-              ? 'border-blue-600 text-blue-600'
+              ? 'border-blue-900 text-blue-900'
               : 'border-transparent text-gray-700 hover:text-gray-700 hover:border-gray-300'
           }`}
         >
           All
         </Link>
         <Link
-          href="/invoices?status=draft"
+          href="/invoices?status=unpaid"
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
-            statusFilter === 'draft'
-              ? 'border-blue-600 text-blue-600'
+            statusFilter === 'unpaid'
+              ? 'border-red-600 text-red-600'
               : 'border-transparent text-gray-700 hover:text-gray-700 hover:border-gray-300'
           }`}
         >
-          Draft
-        </Link>
-        <Link
-          href="/invoices?status=sent"
-          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
-            statusFilter === 'sent'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-700 hover:text-gray-700 hover:border-gray-300'
-          }`}
-        >
-          Sent
+          Unpaid
         </Link>
         <Link
           href="/invoices?status=paid"
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
             statusFilter === 'paid'
-              ? 'border-blue-600 text-blue-600'
+              ? 'border-green-600 text-green-600'
               : 'border-transparent text-gray-700 hover:text-gray-700 hover:border-gray-300'
           }`}
         >

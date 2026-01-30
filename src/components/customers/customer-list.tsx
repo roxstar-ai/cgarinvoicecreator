@@ -68,9 +68,17 @@ export function CustomerList({ customers, filter }: CustomerListProps) {
 
   const getDisplayName = (customer: Customer) => {
     if (customer.first_name && customer.last_name) {
-      return customer.middle_name
-        ? `${customer.last_name}, ${customer.first_name} ${customer.middle_name}`
-        : `${customer.last_name}, ${customer.first_name}`;
+      if (sortField === 'first_name') {
+        // First name sort: "John William Doe"
+        return customer.middle_name
+          ? `${customer.first_name} ${customer.middle_name} ${customer.last_name}`
+          : `${customer.first_name} ${customer.last_name}`;
+      } else {
+        // Last name sort: "Doe, John William"
+        return customer.middle_name
+          ? `${customer.last_name}, ${customer.first_name} ${customer.middle_name}`
+          : `${customer.last_name}, ${customer.first_name}`;
+      }
     }
     return customer.name;
   };
@@ -110,7 +118,7 @@ export function CustomerList({ customers, filter }: CustomerListProps) {
             placeholder="Search residents..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-gray-900 placeholder:text-gray-500"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent text-gray-900 placeholder:text-gray-500"
           />
         </div>
         <div className="flex gap-2">
@@ -148,66 +156,78 @@ export function CustomerList({ customers, filter }: CustomerListProps) {
         </p>
       )}
 
-      {/* Customer List */}
+      {/* Customer Table */}
       {filteredAndSortedCustomers.length > 0 ? (
-        <div className="grid gap-2">
-          {filteredAndSortedCustomers.map((customer) => {
-            const dailyTotal = (customer.daily_rate || 0) * (customer.daily_rate_days || 0);
-            const total =
-              customer.monthly_rate +
-              dailyTotal +
-              (customer.additional_line_1_amount || 0) +
-              (customer.additional_line_2_amount || 0) +
-              (customer.additional_line_3_amount || 0);
+        <Card>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">Name</th>
+                  <th className="py-3 px-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wide">Monthly</th>
+                  <th className="py-3 px-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wide">Daily</th>
+                  <th className="py-3 px-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wide">Item 1</th>
+                  <th className="py-3 px-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wide">Item 2</th>
+                  <th className="py-3 px-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wide">Item 3</th>
+                  <th className="py-3 px-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wide">Total</th>
+                  <th className="py-3 px-2 w-10"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAndSortedCustomers.map((customer, index) => {
+                  const dailyTotal = (customer.daily_rate || 0) * (customer.daily_rate_days || 0);
+                  const total =
+                    customer.monthly_rate +
+                    dailyTotal +
+                    (customer.additional_line_1_amount || 0) +
+                    (customer.additional_line_2_amount || 0) +
+                    (customer.additional_line_3_amount || 0);
 
-            // Build rate summary
-            const rateParts: string[] = [];
-            if (customer.monthly_rate > 0) {
-              rateParts.push(`Monthly: ${formatCurrency(customer.monthly_rate)}`);
-            }
-            if (customer.daily_rate && customer.daily_rate_days) {
-              rateParts.push(`Daily: ${formatCurrency(dailyTotal)} (${customer.daily_rate_days}d)`);
-            }
-            if (customer.additional_line_1_amount) {
-              rateParts.push(`${customer.additional_line_1_desc}: ${formatCurrency(customer.additional_line_1_amount)}`);
-            }
-            if (customer.additional_line_2_amount) {
-              rateParts.push(`${customer.additional_line_2_desc}: ${formatCurrency(customer.additional_line_2_amount)}`);
-            }
-            if (customer.additional_line_3_amount) {
-              rateParts.push(`${customer.additional_line_3_desc}: ${formatCurrency(customer.additional_line_3_amount)}`);
-            }
-
-            return (
-              <div
-                key={customer.id}
-                className={`flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg ${!customer.is_active ? 'opacity-60' : ''}`}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-gray-900 truncate">
-                      {getDisplayName(customer)}
-                    </span>
-                    {!customer.is_active && (
-                      <span className="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">
-                        Inactive
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-600 truncate">
-                    {rateParts.join(' • ')}
-                  </p>
-                </div>
-                <div className="flex items-center gap-4 ml-4">
-                  <div className="text-right">
-                    <p className="font-bold text-blue-600">{formatCurrency(total)}</p>
-                  </div>
-                  <CustomerActions customer={customer} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                  return (
+                    <tr
+                      key={customer.id}
+                      className={`hover:bg-blue-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} ${!customer.is_active ? 'opacity-60' : ''}`}
+                    >
+                      <td className="py-1.5 px-4">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-gray-900">{getDisplayName(customer)}</span>
+                          {!customer.is_active && (
+                            <span className="text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded">
+                              Inactive
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-1.5 px-3 text-right text-sm text-gray-600">
+                        {customer.monthly_rate > 0 ? formatCurrency(customer.monthly_rate) : <span className="text-gray-300">-</span>}
+                      </td>
+                      <td className="py-1.5 px-3 text-right text-sm text-gray-600">
+                        {dailyTotal > 0 ? formatCurrency(dailyTotal) : <span className="text-gray-300">-</span>}
+                      </td>
+                      <td className="py-1.5 px-3 text-right text-sm text-gray-600">
+                        {customer.additional_line_1_amount ? formatCurrency(customer.additional_line_1_amount) : <span className="text-gray-300">-</span>}
+                      </td>
+                      <td className="py-1.5 px-3 text-right text-sm text-gray-600">
+                        {customer.additional_line_2_amount ? formatCurrency(customer.additional_line_2_amount) : <span className="text-gray-300">-</span>}
+                      </td>
+                      <td className="py-1.5 px-3 text-right text-sm text-gray-600">
+                        {customer.additional_line_3_amount ? formatCurrency(customer.additional_line_3_amount) : <span className="text-gray-300">-</span>}
+                      </td>
+                      <td className="py-1.5 px-3 text-right text-sm text-gray-900">
+                        {formatCurrency(total)}
+                      </td>
+                      <td className="py-1.5 px-2">
+                        <CustomerActions customer={customer} />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
       ) : (
         <Card>
           <CardContent className="py-8 text-center">

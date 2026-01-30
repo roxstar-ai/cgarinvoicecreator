@@ -102,6 +102,32 @@ export async function getCustomers(filter: 'all' | 'active' | 'inactive' = 'all'
 }
 
 // Update a single customer's name fields
+export async function getCustomerWithInvoices(id: string) {
+  const supabase = await createClient();
+
+  const { data: customer, error: customerError } = await supabase
+    .from('customers')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (customerError) {
+    return { error: customerError.message };
+  }
+
+  const { data: invoices, error: invoicesError } = await supabase
+    .from('invoices')
+    .select('*')
+    .eq('customer_id', id)
+    .order('service_month', { ascending: false });
+
+  if (invoicesError) {
+    return { error: invoicesError.message };
+  }
+
+  return { customer, invoices };
+}
+
 export async function updateCustomerNameFields(
   id: string,
   firstName: string,
